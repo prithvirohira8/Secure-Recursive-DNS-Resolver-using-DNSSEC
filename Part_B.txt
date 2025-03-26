@@ -1,0 +1,29 @@
+Implementation Details for Part B
+
+Verification steps from the Root:
+
+Root Zone
+DNS resolver starts with a pre-configured root zone trust anchor (Root KSK)
+Resolver queries root zone for DNSKEY records
+Root zone returns DNSKEY records (KSK and ZSK) with RRSIG
+Resolver validates root DNSKEY RRset using the trust anchor
+
+TLD Zone (.com in this example)
+Root zone provides DS record for .com TLD
+Resolver queries .com TLD servers for DNSKEY records
+.com returns DNSKEY records (KSK and ZSK) with RRSIG
+Resolver validates .com DNSKEY RRset using .com's DS record from root
+
+Domain Zone (example.com)
+.com TLD provides DS record for example.com
+Resolver queries example.com authoritative servers for DNSKEY records
+example.com returns DNSKEY records (KSK and ZSK) with RRSIG
+Resolver validates example.com DNSKEY RRset using its DS record from .com TLD
+
+Resource Records
+Resolver queries for desired resource record (e.g., A record for www.example.com)
+Authoritative server returns requested record with RRSIG
+Resolver validates the record's RRSIG using example.com's ZSK
+Final Steps
+If all validations succeed, resolver returns the authenticated responset
+If any validation fails, resolver returns that the 'Verification of DNSSEC' failed
